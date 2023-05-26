@@ -1,0 +1,95 @@
+eWorkout tooling for documentation
+  - Prefered mkdocs, if missing a feature -> sphinx
+  - API reference to have all python code linked to other docs
+  - sphinx numpy style python docstrings -> napoleon
+
+When you come across difficulties, make issue to 
+
+1. Create basic doc structure based on Dymos
+  - API
+  - mkdocs
+  
+2. Feature Tree:
+  - Basic background/theory (based on dymos, acedemic reference, dissertation style)
+    * Based on matthew kelly paper, include code to simpelest problem. 
+      + 1D slide with friction to introduce one phase, two phases
+      + 2D slide to introduce path constraint
+      + Simpelest should explain:
+         > state variables (DAEs)
+         > control variables
+         > time
+         > objective function
+         > Guesses and bounds
+         > (numerical values instead of symbols to avoid auxiliary data?)
+         
+       + More complex
+         > Auxiliary data
+         > Integral variables
+         > Integrand functions
+         > Path constraints 
+         > Static parameter variables
+         > multi-phase
+         > Endpoint constraints
+         > Extracting solution
+         > Plotting
+         > Interpreting IPOPT output (exit criteria) 
+         > Settings (meshing, tolerances, etc)
+  
+       + what specific example is helpful for endpoint constraints
+       
+         
+         
+  - Long form examples, based on pycollo/examples
+    * option 1: go through examples pycollo, write all individually
+    * option 2: manufacture new example to specifically explain something
+    * 
+    
+    
+  - Features  
+    * tips n tricks
+      > DONT EVER DO ....
+      > common pitfalls
+      > 
+    * FAQ (Cookbook style: quick example, no max, not differentiable)
+    * Debugging
+    * Efficiency
+    
+
+
+4. Docstrings in code good, such that text is linked with API properly
+
+
+ Definition of the optimal control problem solved by Pycollo.
+ Background on direct collocation.
+ Background on Legendre-Gauss methods (LG, LGR, and LGL).
+ Background on hp-method mesh refinement.
+ Background on scaling.
+ 
+ Creating and using state variables.
+ Creating and using control variables.
+ Creating and using integral variables.
+ Creating and using time variables.
+ Creating and using static parameter variables.
+ Creating and using state equations.
+ Creating and using path constraints.
+ Creating and using integrand functions.
+ Creating and using endpoint constraints.
+ Setting bounds.
+ Setting guesses.
+ Creation of multiphase problems with contiguous (sequential) and continuous phases.
+ Creation of multiphase problems with time-varying boundary.
+ Creation of multiphase problems using phase copying.
+ 
+ Overview of Pycollo settings.
+ Extracting solutions from solved problems.
+ Helpful tips for defining collocation-safe problems. (Decision making on handing a problem to the software) 
+
+
+## INVOICING
+10 days first, after which review progress, create proposal for next 5 day block, repeat. Continue untill budget empty or Jans had enough or if Jan sucks
+
+20% extra on student assistend wage.
+
+
+
+ 
