@@ -27,6 +27,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
+    "sphinx_toolbox.more_autodoc.autonamedtuple"
 ]
 
 templates_path = ["_templates"]

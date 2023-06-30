@@ -1,15 +1,4 @@
-"""Objects, functions and constants relating to OCP bounds.
-
-Attributes
-----------
-DEFAULT_ASSUME_INF_BOUNDS : bool
-    Default as to whether Pycollo should treat unspecified bounds as being
-    numerically infinite.
-DEFAULT_INF_VALUE : float
-    Default numerical value for when Pycollo needs to use a finite numerical
-    approximation for infinity.
-
-"""
+"""Objects, functions and constants relating to OCP bounds."""
 
 
 __all__ = ["EndpointBounds", "PhaseBounds"]
@@ -29,7 +18,8 @@ from .utils import (
 )
 
 # Default values for settings
-DEFAULT_ASSUME_INF_BOUNDS = True
+DEFAULT_ASSUME_INF_BOUNDS = True 
+""" Default as to whether Pycollo should treat unspecified bounds as being numerically infinite."""
 DEFAULT_BOUND_CLASH_ABSOLUTE_TOLERANCE = 1e-6
 DEFAULT_BOUND_CLASH_RELATIVE_TOLERANCE = 1e-6
 DEFAULT_NUMERICAL_INF = 10e19
@@ -40,48 +30,29 @@ DEFAULT_REMOVE_CONSTANT_VARIABLES = True
 # Data structures
 phase_info_fields = ("name", "index", "backend")
 PhaseInfo = namedtuple("PhaseInfo", phase_info_fields)
-"""Data structure for information about OCP phases.
-
-These are mostly used to format descriptive error messages for the user.
-
-Fields
-------
-name : str
-    The name associated with the phase
-index : int
-    The index of the phase.
-backend : :py:class:`PycolloPhaseData`
-    The phase backend associated with the specified OCP phase.
-
+"""Data structure for information about OCP phases. These are mostly used to format descriptive error messages for the user.
 """
+PhaseInfo.__doc__ = """
+:param str name: The name associated with the phase
+:param int index: The index of the phase. backend `PycolloPhaseData`. 
+:param backend: The phase backend associated with the specified OCP phase."""
+
 
 bounds_info_fields = ("user_bnds", "user_syms", "bnds_type", "num",
                       "is_variable", "none_default_allowed")
 BoundsInfo = namedtuple("BoundsInfo",
                         bounds_info_fields,
                         defaults=[True, True])
-"""Data structure for storing information about user-supplied bounds.
-
-Fields
-------
-user_bnds : obj
-    The bounds that the user has supplied.
-user_syms : Iterable[sym.Symbols]
-    An iterable of symbols relating to the user-supplied bounds (if available).
-bnds_type : str
-    String indentifying the aspect of the OCP that the bounds relate to. Mostly
-    used for formatting descriptive error messages for the user.
-num : int
-    The number of variables/constraints that should be expected for the type of
-    bounds in question.
-is_variable : bool
-    `True` if the bound type in question is a variable, `False` if it is a
-    constraint.
-none_default_allowed : bool
-    `True` if Pycollo should automatically handle the situation where no bounds
-    have been supplied. `False` if an error should be raised.
-
+"""Data structure for storing information about user-supplied bounds."""
+BoundsInfo.__doc__ = """
+    :param obj user_bnds:: The bounds that the user has supplied.
+    :param user_syms: Iterable[sym.Symbols] An iterable of symbols relating to the user-supplied bounds (if available). 
+    :param str bnds_type: String indentifying the aspect of the OCP that the    bounds relate to. Mostly used for formatting descriptive error messages for the user.
+    :param int num: The number of variables/constraints that should be expected for the type of bounds in question. 
+    :param bool is_variable: `True` if the bound type in question is a variable, `False` if it is aconstraint. 
+    :param bool none_default_allowed: `True` if Pycollo should automatically handle the situation where no bounds have been supplied. `False` if an error should be raised.
 """
+
 
 
 class BoundsABC(ABC):
@@ -100,13 +71,14 @@ class BoundsABC(ABC):
 
 
 class EndpointBounds(BoundsABC):
+    """Class to bound :attr:`~.parameter_variables` and :attr:`~.end_point_constraints`"""
 
     def __init__(self,
                  optimal_control_problem,
                  *,
                  parameter_variables: OptionalBoundsType = None,
                  endpoint_constraints: OptionalBoundsType = None,
-                 ):
+                 ) -> None:
 
         self.ocp = optimal_control_problem
         self.parameter_variables = parameter_variables
@@ -154,55 +126,29 @@ class PhaseBounds(BoundsABC):
     functionality will be added in the future to support robust checking of the
     user-supplied values for the bounds.
 
-    Intended behaviour will be::
-
-        * None values will be treated as no bounds, i.e. ['-inf', 'inf'].
-        * Single values will be treated as equal lower and upper bounds.
-        * Mappings will be accepted for `state_variables`, `control_variables`,
+    Intended behaviour:
+        - None values will be treated as no bounds, i.e. ['-inf', 'inf'].
+        - Single values will be treated as equal lower and upper bounds.
+        - Mappings will be accepted for `state_variables`, `control_variables`,
             `initial_state_constraints` and `final_state_constraints`.
-        * Keys in the mappings should be the strings of the corresponding
+        - Keys in the mappings should be the strings of the corresponding
             `state_variables` or `control_variables` for the phase.
-        * 'inf' values will be replaced by a large floating point value so that
+        - 'inf' values will be replaced by a large floating point value so that
             scaling can be done automatically.
-        * The 'inf' replacement value can be changed in
+        - The 'inf' replacement value can be changed in
             `OptimalControlProblem.settings.numerical_inf`, the default is 1e19.
-        * If a :obj:`np.ndarray` with size = (2, 2) is passed as a value then
+        - If a :obj:`np.ndarray` with size = (2, 2) is passed as a value then
             the first dimension will be treated as corresponding to the
             variable or constraint to be bounded.
-        * If iterables are passed then they may contain a combination of None,
+        - If iterables are passed then they may contain a combination of None,
             single numerical values, and pairs of numerical values
-        * Symbolic expressions should also be allowed if they can be converted
+        - Symbolic expressions should also be allowed if they can be converted
             into numerical values when processed alongside auxiliary data.
 
-    Notes
-    -----
-        * 'inf' values should be avoided where possible in order to give better
+    Notes:
+        - 'inf' values should be avoided where possible in order to give better
           automatic scaling.
-
-    Attributes
-    ----------
-    phase
-        The phase with which these bounds will be associated. Default value is
-        `None`.
-    initial_time
-        Bounds on when the phase starts. Default value is `None`.
-    final_time
-        Bounds on when the phase ends.  Default value is `None`.
-    state_variables:
-        Bounds on the phase's state variables. Default value is `None`.
-    control_variables
-        Bounds on the phase's control variables. Default value is `None`.
-    integral_variables
-        Bounds on the phase's integral variables. Default value is `None`.
-    path_constraints
-        Bounds on the phase's path constraints. Default value is `None`.
-    initial_state_constraints
-        Bounds on the phase's state variables at the initial time. Default
-        value is `None`.
-    final_state_constraints
-        Bounds on the phase's state variables at the final time. Default value
-        is `None`.
-    """
+"""
 
     def __init__(self,
                  phase: "Phase",
@@ -218,28 +164,25 @@ class PhaseBounds(BoundsABC):
                  ):
         """Bounds on variables and constraints associated with a phase.
 
-        Args
-        ----
-        phase
-            The phase with which these bounds will be associated.
-        initial_time
-            Bounds on when the phase starts. Default value is `None`.
-        final_time
-            Bounds on when the phase ends.  Default value is `None`.
-        state_variables
-            Bounds on the phase's state variables. Default value is `None`.
-        control_variables
-            Bounds on the phase's control variables. Default value is `None`.
-        integral_variables
-            Bounds on the phase's integral variables. Default value is `None`.
-        path_constraints
-            Bounds on the phase's path constraints. Default value is `None`.
-        initial_state_constraints
-            Bounds on the phase's state variables at the initial time. Default
-            value is `None`.
-        final_state_constraints
-            Bounds on the phase's state variables at the final time. Default
-            value is `None`.
+        parameters:
+            phase: The phase with which these bounds will be associated. 
+                Defaults to None
+            initial_time: Bounds on when the phase starts. Default value is     
+                `None`.
+            final_time: Bounds on when the phase ends.  Default value is    
+                `None`.        
+            state_variables: Bounds on the phase's state variables. Default 
+                value is `None`.
+            control_variables: Bounds on the phase's control variables. Default 
+                value is `None`.
+            integral_variables: Bounds on the phase's integral variables. 
+                Default value is `None`.
+            path_constraints: Bounds on the phase's path constraints. Default   
+                value is `None`.
+            initial_state_constraints: Bounds on the phase's state variables at 
+                the initial time. Default value is `None`.
+            final_state_constraints: Bounds on the phase's state variables at 
+                the final time. Default value is `None`.
         """
         self.ocp = phase.optimal_control_problem
         self.phase = phase
