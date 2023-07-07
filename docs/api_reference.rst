@@ -10,4 +10,4 @@ API Reference
 
     pycollo.optimal_control_problem
     pycollo.phase
-
+    pycollo.guess

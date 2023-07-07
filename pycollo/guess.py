@@ -3,6 +3,7 @@
 
 import numpy as np
 from pyproprop import processed_property
+from typing import Optional
 
 __all__ = ["EndpointGuess", "PhaseGuess"]
 
@@ -25,42 +26,7 @@ def assert_increasing(a):
 class PhaseGuess:
     """Data class for holding phase-specific user-supplied guess information.
 
-    Attributes
-    ----------
-    phase : Phase
-        The :py:class:`Phase` object with which this guess is assocaited.
-    time : Optional[numpy.ndarray], None
-        A sequential list of the time points at which the guess occur for this
-        phase. These must be in ascending order otherwise an error will be
-        raised. If it has a value of None then it has not been set and will
-        raise an error during the preprocessing of the guesses during the
-        problem initialisation.
-    state_variables : Optional[numpy.ndarray], None
-        An array of values, one each for each state variable in the optimal
-        control problem and for every temporal node in the time guess. This
-        guess must therefore be square.
-    control_variables : Optional[numpy.ndarray], None
-        An array of values, one each for each control variable in the optimal
-        control problem and for every temporal node in the time guess. This
-        guess must therefore be square.
-    integral_variables : Optional[numpy.ndarray], None
-        An array of values, one each for each integral variable in the optimal
-        control problem. If there is only a single integral variable in the
-        optimal control problem then a single `float` can be supplied as the
-        `pyproprop.processed_property` will automatically convert this to a
-        one-dimensional `numpy.ndarray`.
-    state_endpoint_override : bool, True
-        An option which when is set to True will automatically override the
-        user-supplied guess for state endpoint variables with constrained state
-        endpoints where the optimal control problem has them. This option is
-        recommended to be left as True.
-    auto_bound : bool, True
-        An option which when is set to True will override any user-supplied
-        guess values with the upper-/lower-bound for the appropriate variable
-        in any cases where the user-supplied guess does not fall within the
-        user-supplied bounds for that variable. This option is useful in
-        situations where small floating point inaccuaries may cause a bound not
-        to be met by a very small amount.
+   
 
     """
 
@@ -84,6 +50,41 @@ class PhaseGuess:
                  control_variables=None,
                  integral_variables=None
                  ):
+        """ 
+        Parameters:
+            phase : The :class:`~.Phase` object with which this guess is assocaited.
+            time (Optional[numpy.ndarray]): A sequential list of the time points at 
+                which the guess occur for this phase. These must be in ascending order 
+                otherwise an error will be raised. If it has a value of None then it 
+                has not been set and will raise an error during the preprocessing of
+                the guesses during the problem initialisation.
+            state_variables : Optional[numpy.ndarray], None
+                An array of values, one each for each state variable in the optimal
+                control problem and for every temporal node in the time guess. This
+                guess must therefore be square.
+            control_variables : Optional[numpy.ndarray], None
+                An array of values, one each for each control variable in the optimal
+                control problem and for every temporal node in the time guess. This
+                guess must therefore be square.
+            integral_variables : Optional[numpy.ndarray], None
+                An array of values, one each for each integral variable in the optimal
+                control problem. If there is only a single integral variable in the
+                optimal control problem then a single `float` can be supplied as the
+                `pyproprop.processed_property` will automatically convert this to a
+                one-dimensional `numpy.ndarray`.
+            state_endpoint_override : bool, True
+                An option which when is set to True will automatically override the
+                user-supplied guess for state endpoint variables with constrained state
+                endpoints where the optimal control problem has them. This option is
+                recommended to be left as True.
+            auto_bound : bool, True
+                An option which when is set to True will override any user-supplied
+                guess values with the upper-/lower-bound for the appropriate variable
+                in any cases where the user-supplied guess does not fall within the
+                user-supplied bounds for that variable. This option is useful in
+                situations where small floating point inaccuaries may cause a bound not
+                to be met by a very small amount."""
+
         self.phase = phase
         self.time = time
         self.state_variables = state_variables
@@ -91,7 +92,6 @@ class PhaseGuess:
         self.integral_variables = integral_variables
         self.state_endpoints_override = True
         self.auto_bound = True
-
 
 class EndpointGuess:
 
